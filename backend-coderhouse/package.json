@@ -1,0 +1,12 @@
+{
+  "name": "backend-coderhouse",
+  "version": "1.0.0",
+  "description": "Proyecto backend primera entrega",
+  "main": "src/app.js",
+  "author": "Facundo Mazzola",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  }
+}
