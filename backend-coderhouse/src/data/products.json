@@ -1,10 +1,5 @@
 [
   {
-    "id": 1,
-    "title": "Samsung Galaxy A15",
-    "price": "320000"
-  },
-  {
     "id": 2,
     "title": "iPhone 11 64GB",
     "price": "850000"
@@ -23,5 +18,10 @@
     "id": 5,
     "title": "Samsung Galaxy S23",
     "price": "1100000"
+  },
+  {
+    "id": 6,
+    "title": "Samsung Galaxy A15",
+    "price": "$320000"
   }
 ]

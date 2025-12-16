@@ -1,9 +1,14 @@
-<h1>Lista de productos</h1>
+<h1>Listado de productos</h1>
 
-<ul>
+{{#if products.length}}
+<ul class="product-list">
     {{#each products}}
-        <li>
-            {{this.title}} - ${{this.price}}
-        </li>
+    <li class="product-card">
+        <strong>{{this.title}}</strong>
+        <span>$ {{this.price}}</span>
+    </li>
     {{/each}}
 </ul>
+{{else}}
+<p>No hay productos cargados.</p>
+{{/if}}

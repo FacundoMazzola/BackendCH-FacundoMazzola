@@ -49,3 +49,72 @@ input {
     margin-right: 10px;
 }
 
+/* HEADER */
+
+.main-header {
+    background-color: #1e88e5;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-header h2 {
+    margin: 0;
+}
+
+.main-header nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+    font-weight: bold;
+}
+
+.main-header nav a:hover {
+    text-decoration: underline;
+}
+
+/* CONTENEDOR */
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+/* PRODUCTOS */
+
+.product-list {
+    padding: 0;
+}
+
+.product-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-card span {
+    font-weight: bold;
+}
+
+
+/* FORM */
+
+.product-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* FOOTER */
+
+.main-footer {
+    margin-top: 40px;
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+}
+
+
+
