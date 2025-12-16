@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": 1,
+    "title": "Samsung Galaxy A15",
+    "price": "320000"
+  },
+  {
+    "id": 2,
+    "title": "iPhone 11 64GB",
+    "price": "850000"
+  },
+  {
+    "id": 3,
+    "title": "Motorola G34 5G",
+    "price": "280000"
+  },
+  {
+    "id": 4,
+    "title": "Xiaomi Redmi Note 13",
+    "price": "350000"
+  },
+  {
+    "id": 5,
+    "title": "Samsung Galaxy S23",
+    "price": "1100000"
+  }
+]
