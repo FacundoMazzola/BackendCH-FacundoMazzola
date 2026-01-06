@@ -1,15 +1,15 @@
-<h2>Administración de Productos</h2>
+<h2>Productos en tiempo real</h2>
 
-<form id="productForm">
+<form id="form">
     <input name="title" placeholder="Nombre" required>
-    <input name="description" placeholder="Descripción" required>
     <input name="price" placeholder="Precio" required>
-    <input name="image" placeholder="URL imagen" required>
+    <input name="thumbnail" placeholder="URL imagen" required>
     <button>Agregar</button>
 </form>
 
-<div id="productsContainer"></div>
+<ul id="list"></ul>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/realtime.js"></script>
+
 

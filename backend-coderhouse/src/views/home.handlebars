@@ -1,17 +1,19 @@
-<h2>📱 Catálogo de Celulares</h2>
+<h2>Productos</h2>
 
-<div class="products">
-{{#each products}}
-    <div class="card">
-        <img src="{{image}}">
-        <h3>{{title}}</h3>
-        <p>{{description}}</p>
-        <p class="price">$ {{price}}</p>
-        <button class="cart" onclick="addToCart('{{id}}')">
-            Agregar al carrito
-        </button>
-    </div>
-{{/each}}
+<div id="products">
+    {{#each products}}
+        <div class="card">
+            <img src="{{this.thumbnail}}" alt="{{this.title}}">
+            <h3>{{this.title}}</h3>
+            <p>${{this.price}}</p>
+            <button onclick="addToCart('{{this.id}}')">Agregar al carrito</button>
+        </div>
+    {{/each}}
 </div>
+
+<script src="/js/cart.js"></script>
+
+
+
 
 
