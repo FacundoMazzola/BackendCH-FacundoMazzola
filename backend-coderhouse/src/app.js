@@ -16,46 +16,39 @@ const io = new Server(server);
 const PORT = 8080;
 const pm = new ProductManager();
 
-// ---------------- MIDDLEWARES ----------------
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
-// ---------------- HANDLEBARS ----------------
+// Handlebars
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
-// ---------------- ROUTERS ----------------
+// Rutas
 app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 
-// ---------------- SOCKET.IO ----------------
+// Websocket
 io.on('connection', async socket => {
-    console.log('Cliente conectado por websocket');
+    console.log('Cliente conectado');
 
-    // Enviar lista inicial
     const products = await pm.getAll();
     socket.emit('productsUpdated', products);
 
-    // Agregar producto
     socket.on('newProduct', async data => {
         await pm.addProduct(data);
-        const updatedProducts = await pm.getAll();
-        io.emit('productsUpdated', updatedProducts);
+        io.emit('productsUpdated', await pm.getAll());
     });
 
-    // Eliminar producto
     socket.on('deleteProduct', async pid => {
         await pm.deleteProduct(pid);
-        const updatedProducts = await pm.getAll();
-        io.emit('productsUpdated', updatedProducts);
+        io.emit('productsUpdated', await pm.getAll());
     });
 });
 
-// ---------------- SERVER ----------------
 server.listen(PORT, () => {
     console.log(`🚀 Servidor funcionando en http://localhost:${PORT}`);
 });
-

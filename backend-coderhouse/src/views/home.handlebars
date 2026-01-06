@@ -1,14 +1,17 @@
-<h1>Listado de productos</h1>
+<h2>📱 Catálogo de Celulares</h2>
 
-{{#if products.length}}
-<ul class="product-list">
-    {{#each products}}
-    <li class="product-card">
-        <strong>{{this.title}}</strong>
-        <span>$ {{this.price}}</span>
-    </li>
-    {{/each}}
-</ul>
-{{else}}
-<p>No hay productos cargados.</p>
-{{/if}}
+<div class="products">
+{{#each products}}
+    <div class="card">
+        <img src="{{image}}">
+        <h3>{{title}}</h3>
+        <p>{{description}}</p>
+        <p class="price">$ {{price}}</p>
+        <button class="cart" onclick="addToCart('{{id}}')">
+            Agregar al carrito
+        </button>
+    </div>
+{{/each}}
+</div>
+
+

@@ -7,21 +7,25 @@
 </head>
 <body>
 
-    <header class="main-header">
-        <h2>📱 CellStore</h2>
-        <nav>
-            <a href="/">Inicio</a>
-        </nav>
-    </header>
+<header class="header">
+    <h1>📱 Mobile Store</h1>
 
-    <main class="container">
-        {{{body}}}
-    </main>
-    
-<footer class="main-footer">
-    <p>CellStore © 2025 - Proyecto Backend Coderhouse</p>
-</footer>
+    <nav>
+        <a href="/">Productos</a>
+        <a href="/realtimeproducts">Admin</a>
+    </nav>
 
+    <a href="/cart" class="cart-icon">
+        🛒 <span id="cartCount">0</span>
+    </a>
+</header>
+
+{{{body}}}
+
+<script src="/js/cart.js"></script>
 </body>
 </html>
+
+
+
 

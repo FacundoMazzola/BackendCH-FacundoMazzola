@@ -1,56 +1,46 @@
-const fs = require('fs').promises;
+const fs = require('fs/promises');
 const path = require('path');
 
 class ProductManager {
     constructor() {
-        this.path = path.join(__dirname, '..', 'data', 'products.json');
+        this.path = path.join(__dirname, '../data/products.json');
     }
 
     async getAll() {
-        const data = await fs.readFile(this.path, 'utf8');
-        return JSON.parse(data);
+        const data = await fs.readFile(this.path, 'utf-8');
+        return JSON.parse(data || '[]');
+    }
+
+    async save(products) {
+        await fs.writeFile(this.path, JSON.stringify(products, null, 2));
+    }
+
+    async addProduct(data) {
+        const products = await this.getAll();
+
+        const newProduct = {
+            id: Date.now().toString(),
+            title: data.title,
+            description: data.description,
+            price: Number(data.price),
+            image: data.image,
+            status: true
+        };
+
+        products.push(newProduct);
+        await this.save(products);
+        return newProduct;
     }
 
     async getById(id) {
         const products = await this.getAll();
-        return products.find(p => p.id === parseInt(id));
-    }
-
-    async saveAll(products) {
-        await fs.writeFile(this.path, JSON.stringify(products, null, 2));
-    }
-
-    async addProduct(product) {
-        const products = await this.getAll();
-        const id = products.length ? products[products.length - 1].id + 1 : 1;
-
-        const newProduct = { id, ...product };
-        products.push(newProduct);
-        await this.saveAll(products);
-
-        return newProduct;
-    }
-
-    async updateProduct(id, data) {
-        const products = await this.getAll();
-        const index = products.findIndex(p => p.id === parseInt(id));
-
-        if (index === -1) return null;
-
-        products[index] = { ...products[index], ...data };
-        await this.saveAll(products);
-
-        return products[index];
+        return products.find(p => p.id === id);
     }
 
     async deleteProduct(id) {
         const products = await this.getAll();
-        const filtered = products.filter(p => p.id !== parseInt(id));
-
-        if (filtered.length === products.length) return null;
-
-        await this.saveAll(filtered);
-        return true;
+        const filtered = products.filter(p => p.id !== id);
+        await this.save(filtered);
     }
 }
 
