@@ -1,28 +1,15 @@
-<h2>Productos</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tienda de Celulares</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
 
-<div class="products">
-{{#each payload}}
-    <div class="card">
-        <img src="{{this.thumbnails.[0]}}" alt="{{this.title}}">
-        <h3>{{this.title}}</h3>
-        <p>$ {{this.price}}</p>
+    <h1>📱 Tienda de Celulares</h1>
+    <p>Listado de productos cargados</p>
 
-        <a href="/products/{{this._id}}">Ver detalle</a>
-        <button onclick="addToCart('{{this._id}}')">Agregar al carrito</button>
-    </div>
-{{/each}}
-</div>
+</body>
+</html>
 
-<div class="pagination">
-    {{#if hasPrevPage}}
-        <a href="{{prevLink}}">⬅ Anterior</a>
-    {{/if}}
-
-    <span>Página {{page}} de {{totalPages}}</span>
-
-    {{#if hasNextPage}}
-        <a href="{{nextLink}}">Siguiente ➡</a>
-    {{/if}}
-</div>
-
-<script src="/js/cart.js"></script>
