@@ -5,52 +5,78 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const {
+        let {
             limit = 10,
             page = 1,
             sort,
             query
         } = req.query;
 
+        limit = Number(limit);
+        page = Number(page);
+
         const filter = {};
 
+        // Filtro por categoría o disponibilidad
         if (query) {
-            filter.category = query;
+            if (query === 'true' || query === 'false') {
+                filter.status = query === 'true';
+            } else {
+                filter.category = query;
+            }
         }
 
-        const options = {
-            limit: parseInt(limit),
-            skip: (page - 1) * limit
-        };
+        // Ordenamiento por precio
+        let sortOption = {};
+        if (sort === 'asc') sortOption.price = 1;
+        if (sort === 'desc') sortOption.price = -1;
 
-        let queryExec = Product.find(filter);
-
-        if (sort === 'asc') queryExec = queryExec.sort({ price: 1 });
-        if (sort === 'desc') queryExec = queryExec.sort({ price: -1 });
-
-        const products = await queryExec
-            .limit(options.limit)
-            .skip(options.skip);
-
-        const totalProducts = await Product.countDocuments(filter);
-        const totalPages = Math.ceil(totalProducts / limit);
+        const result = await Product.paginate(filter, {
+            limit,
+            page,
+            sort: sortOption,
+            lean: true
+        });
 
         res.json({
             status: 'success',
-            payload: products,
-            totalPages,
-            prevPage: page > 1 ? Number(page) - 1 : null,
-            nextPage: page < totalPages ? Number(page) + 1 : null,
-            page: Number(page),
-            hasPrevPage: page > 1,
-            hasNextPage: page < totalPages,
-            prevLink: page > 1 ? `/api/products?page=${page - 1}` : null,
-            nextLink: page < totalPages ? `/api/products?page=${Number(page) + 1}` : null
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: result.hasPrevPage
+                ? `http://localhost:8080/api/products?page=${result.prevPage}`
+                : null,
+            nextLink: result.hasNextPage
+                ? `http://localhost:8080/api/products?page=${result.nextPage}`
+                : null
         });
+
     } catch (error) {
-        res.status(500).json({ status: 'error', error: error.message });
+        res.status(500).json({
+            status: 'error',
+            error: error.message
+        });
+    }
+});
+
+/**
+ * POST /api/products
+ */
+router.post('/', async (req, res) => {
+    try {
+        const product = await Product.create(req.body);
+        res.status(201).json(product);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 
 module.exports = router;
+
+
+
 

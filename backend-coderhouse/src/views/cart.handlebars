@@ -1,9 +1,13 @@
 <h2>🛒 Tu carrito</h2>
 
-<div id="cartContainer" class="products"></div>
+{{#each products}}
+    <div class="cart-item">
+        <h3>{{this.product.title}}</h3>
+        <p>Cantidad: {{this.quantity}}</p>
+        <p>Precio: ${{this.product.price}}</p>
+    </div>
+{{/each}}
 
-<div class="cart-actions">
-    <button class="buy" onclick="finalizarCompra()">Finalizar compra</button>
-</div>
+<a href="/products">⬅ Volver a la tienda</a>
 
 

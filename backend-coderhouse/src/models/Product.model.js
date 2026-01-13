@@ -1,28 +1,34 @@
 const mongoose = require('mongoose');
-
 const mongoosePaginate = require('mongoose-paginate-v2');
-productSchema.plugin(mongoosePaginate);
-
 
 const productSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    code: {
+    title: {
         type: String,
-        unique: true
+        required: true
     },
-    price: Number,
+    description: {
+        type: String,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    category: {
+        type: String,
+        required: true
+    },
+    stock: {
+        type: Number,
+        required: true
+    },
     status: {
         type: Boolean,
         default: true
-    },
-    stock: Number,
-    category: String,
-    thumbnails: {
-        type: [String],
-        default: []
     }
 });
+
+productSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Product', productSchema);
 

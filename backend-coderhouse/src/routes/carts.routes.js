@@ -1,55 +1,48 @@
 const express = require('express');
-const Cart = require('../models/Cart.model');
+const CartManager = require('../managers/CartManager');
 
 const router = express.Router();
+const cm = new CartManager();
 
-// Crear carrito
 router.post('/', async (req, res) => {
-    const cart = await Cart.create({ products: [] });
-    res.json(cart);
+    const cart = await cm.createCart();
+    res.status(201).json(cart);
 });
 
-// Ver carrito con populate
 router.get('/:cid', async (req, res) => {
-    const cart = await Cart.findById(req.params.cid).populate('products.product');
+    const cart = await cm.getCartById(req.params.cid);
     res.json(cart);
 });
 
-// Agregar producto
 router.post('/:cid/products/:pid', async (req, res) => {
-    const cart = await Cart.findById(req.params.cid);
-
-    const productIndex = cart.products.findIndex(
-        p => p.product.toString() === req.params.pid
-    );
-
-    if (productIndex !== -1) {
-        cart.products[productIndex].quantity++;
-    } else {
-        cart.products.push({ product: req.params.pid });
-    }
-
-    await cart.save();
-    res.json(cart);
+    await cm.addProduct(req.params.cid, req.params.pid);
+    res.json({ status: 'success' });
 });
 
-// Eliminar producto
 router.delete('/:cid/products/:pid', async (req, res) => {
-    const cart = await Cart.findById(req.params.cid);
-    cart.products = cart.products.filter(
-        p => p.product.toString() !== req.params.pid
-    );
-    await cart.save();
+    await cm.deleteProduct(req.params.cid, req.params.pid);
+    res.json({ status: 'success' });
+});
+
+router.put('/:cid', async (req, res) => {
+    const cart = await cm.updateCart(req.params.cid, req.body.products);
     res.json(cart);
 });
 
-// Vaciar carrito
+router.put('/:cid/products/:pid', async (req, res) => {
+    const cart = await cm.updateQuantity(
+        req.params.cid,
+        req.params.pid,
+        req.body.quantity
+    );
+    res.json(cart);
+});
+
 router.delete('/:cid', async (req, res) => {
-    const cart = await Cart.findById(req.params.cid);
-    cart.products = [];
-    await cart.save();
+    const cart = await cm.clearCart(req.params.cid);
     res.json(cart);
 });
 
 module.exports = router;
+
 

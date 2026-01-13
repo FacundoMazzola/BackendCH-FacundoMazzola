@@ -1,21 +1,19 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f4f4f4;
+    font-family: Arial;
+    background: #f2f2f2;
 }
 
 header {
-    background: #111;
-    color: white;
-    padding: 15px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    padding: 15px;
+    background: black;
+    color: white;
 }
 
-#products {
+.products {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, 250px);
     gap: 20px;
     padding: 20px;
 }
@@ -23,20 +21,14 @@ header {
 .card {
     background: white;
     padding: 10px;
-    border-radius: 6px;
-    text-align: center;
+    border-radius: 8px;
 }
 
 .card img {
     width: 100%;
-    height: 150px;
-    object-fit: cover;
 }
 
-button {
-    padding: 8px;
-    background: #0a7cff;
+.cart-link {
     color: white;
-    border: none;
-    cursor: pointer;
+    text-decoration: none;
 }
