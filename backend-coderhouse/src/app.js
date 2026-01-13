@@ -1,11 +1,13 @@
 const express = require('express');
+const handlebars = require('express-handlebars');
 const http = require('http');
 const { Server } = require('socket.io');
-const handlebars = require('express-handlebars');
-const path = require('path');
 
-const viewsRouter = require('./routes/views.router');
+const connectDB = require('./config/db');
+
 const productsRouter = require('./routes/products.routes');
+const cartsRouter = require('./routes/carts.routes');
+const viewsRouter = require('./routes/views.router');
 
 const app = express();
 const server = http.createServer(app);
@@ -13,40 +15,25 @@ const io = new Server(server);
 
 const PORT = 8080;
 
-// middlewares
+// Mongo
+connectDB();
+
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname + '/public'));
 
-// handlebars
+// Handlebars
 app.engine('handlebars', handlebars.engine());
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
-// rutas
+// Routes
 app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/carts', cartsRouter);
 
-// sockets
-const ProductManager = require('./managers/ProductManager');
-const pm = new ProductManager();
-
-io.on('connection', async socket => {
-    console.log('🟢 Cliente conectado');
-
-    socket.emit('productsUpdated', await pm.getAll());
-
-    socket.on('newProduct', async data => {
-        await pm.addProduct(data);
-        io.emit('productsUpdated', await pm.getAll());
-    });
-
-    socket.on('deleteProduct', async id => {
-        await pm.deleteProduct(id);
-        io.emit('productsUpdated', await pm.getAll());
-    });
-});
-
+// Server
 server.listen(PORT, () => {
-    console.log(`🚀 Servidor activo en http://localhost:${PORT}`);
+    console.log(`🚀 Servidor funcionando en http://localhost:${PORT}`);
 });

@@ -1,35 +1,56 @@
 const express = require('express');
-const ProductManager = require('../managers/ProductManager');
+const Product = require('../models/Product.model');
 
 const router = express.Router();
-const pm = new ProductManager();
 
 router.get('/', async (req, res) => {
-    const products = await pm.getAll();
-    res.json(products);
-});
+    try {
+        const {
+            limit = 10,
+            page = 1,
+            sort,
+            query
+        } = req.query;
 
-router.get('/:pid', async (req, res) => {
-    const product = await pm.getById(req.params.pid);
-    if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
-    res.json(product);
-});
+        const filter = {};
 
-router.post('/', async (req, res) => {
-    const newProduct = await pm.addProduct(req.body);
-    res.status(201).json(newProduct);
-});
+        if (query) {
+            filter.category = query;
+        }
 
-router.put('/:pid', async (req, res) => {
-    const updated = await pm.updateProduct(req.params.pid, req.body);
-    if (!updated) return res.status(404).json({ error: 'Producto no encontrado' });
-    res.json(updated);
-});
+        const options = {
+            limit: parseInt(limit),
+            skip: (page - 1) * limit
+        };
 
-router.delete('/:pid', async (req, res) => {
-    const deleted = await pm.deleteProduct(req.params.pid);
-    if (!deleted) return res.status(404).json({ error: 'Producto no encontrado' });
-    res.json({ message: 'Producto eliminado correctamente' });
+        let queryExec = Product.find(filter);
+
+        if (sort === 'asc') queryExec = queryExec.sort({ price: 1 });
+        if (sort === 'desc') queryExec = queryExec.sort({ price: -1 });
+
+        const products = await queryExec
+            .limit(options.limit)
+            .skip(options.skip);
+
+        const totalProducts = await Product.countDocuments(filter);
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        res.json({
+            status: 'success',
+            payload: products,
+            totalPages,
+            prevPage: page > 1 ? Number(page) - 1 : null,
+            nextPage: page < totalPages ? Number(page) + 1 : null,
+            page: Number(page),
+            hasPrevPage: page > 1,
+            hasNextPage: page < totalPages,
+            prevLink: page > 1 ? `/api/products?page=${page - 1}` : null,
+            nextLink: page < totalPages ? `/api/products?page=${Number(page) + 1}` : null
+        });
+    } catch (error) {
+        res.status(500).json({ status: 'error', error: error.message });
+    }
 });
 
 module.exports = router;
+

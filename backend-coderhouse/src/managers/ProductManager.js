@@ -1,47 +1,63 @@
-const fs = require('fs/promises');
-const path = require('path');
+const Product = require('../models/Product.model');
 
 class ProductManager {
-    constructor() {
-        this.path = path.join(__dirname, '../data/products.json');
-    }
 
-    async getAll() {
-        const data = await fs.readFile(this.path, 'utf-8');
-        return JSON.parse(data || '[]');
-    }
+    async getProducts({ limit = 10, page = 1, sort, query }) {
 
-    async save(products) {
-        await fs.writeFile(this.path, JSON.stringify(products, null, 2));
-    }
+        const filter = {};
+        if (query) {
+            filter.$or = [
+                { category: query },
+                { status: query === 'true' }
+            ];
+        }
 
-    async addProduct(data) {
-        const products = await this.getAll();
-
-        const newProduct = {
-            id: Date.now().toString(),
-            title: data.title,
-            description: data.description,
-            price: Number(data.price),
-            image: data.image,
-            status: true
+        const options = {
+            limit: Number(limit),
+            page: Number(page),
+            lean: true
         };
 
-        products.push(newProduct);
-        await this.save(products);
-        return newProduct;
+        if (sort) {
+            options.sort = { price: sort === 'asc' ? 1 : -1 };
+        }
+
+        const result = await Product.paginate(filter, options);
+
+        return {
+            status: 'success',
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: result.hasPrevPage
+                ? `/api/products?page=${result.prevPage}`
+                : null,
+            nextLink: result.hasNextPage
+                ? `/api/products?page=${result.nextPage}`
+                : null
+        };
     }
 
     async getById(id) {
-        const products = await this.getAll();
-        return products.find(p => p.id === id);
+        return Product.findById(id);
+    }
+
+    async addProduct(data) {
+        return Product.create(data);
+    }
+
+    async updateProduct(id, data) {
+        return Product.findByIdAndUpdate(id, data, { new: true });
     }
 
     async deleteProduct(id) {
-        const products = await this.getAll();
-        const filtered = products.filter(p => p.id !== id);
-        await this.save(filtered);
+        return Product.findByIdAndDelete(id);
     }
 }
 
 module.exports = ProductManager;
+
