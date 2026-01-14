@@ -1,35 +1,40 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const handlebars = require('express-handlebars');
-const path = require('path');
+const mongoose = require('mongoose');
 
 const productsRouter = require('./routes/products.routes');
+const cartsRouter = require('./routes/carts.routes');
 const viewsRouter = require('./routes/views.router');
 
 const app = express();
 const PORT = 8080;
 
-// ---------------- MIDDLEWARES ----------------
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(__dirname + '/public'));
 
-// ---------------- HANDLEBARS ----------------
+// Handlebars
 app.engine('handlebars', handlebars.engine());
-app.set('views', path.join(__dirname, '../views'));
+app.set('views', __dirname + '/../views');
 app.set('view engine', 'handlebars');
 
-// ---------------- ROUTES ----------------
-app.use('/', viewsRouter);
-app.use('/api/products', productsRouter);
+// Routes
+app.get('/', (req, res) => {
+    res.send('Proyecto Backend Coderhouse - Servidor funcionando');
+});
 
-// ---------------- MONGO ----------------
+app.use('/api/products', productsRouter);
+app.use('/api/carts', cartsRouter);
+app.use('/', viewsRouter);
+
+// Mongo
 mongoose.connect('mongodb://127.0.0.1:27017/backendCoderhouse')
     .then(() => console.log('✅ MongoDB conectado'))
-    .catch(err => console.error('❌ Error MongoDB:', err));
+    .catch(err => console.log('❌ Error MongoDB:', err));
 
-// ---------------- SERVER ----------------
 app.listen(PORT, () => {
     console.log(`🚀 Servidor funcionando en http://localhost:${PORT}`);
 });
+
 
