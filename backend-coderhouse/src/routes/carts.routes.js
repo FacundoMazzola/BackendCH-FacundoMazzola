@@ -1,11 +1,18 @@
 const express = require('express');
 const Cart = require('../models/Cart.model');
+require('../models/Product.model');
+
 
 const router = express.Router();
 
 router.post('/', async (req, res) => {
     const cart = await Cart.create({ products: [] });
     res.json(cart);
+});
+
+router.get('/', async (req, res) => {
+    const carts = await Cart.find().populate('products.product');
+    res.json(carts);
 });
 
 router.get('/:cid', async (req, res) => {
